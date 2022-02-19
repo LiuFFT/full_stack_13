@@ -1,5 +1,5 @@
 const Blog = require('./blog')
-const User = require('./users')
+const User = require('./user')
 
 Blog.sync()
 User.sync()

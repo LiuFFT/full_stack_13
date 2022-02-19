@@ -13,7 +13,7 @@ const userFinder = async (req, res, next) => {
 }
 
 router.get('/', async (req, res) => {
-    const users = await User.findAll()
+    const users = await User.findAll().then()
     res.json(users)
 })
 
