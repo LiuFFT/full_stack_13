@@ -1,8 +1,14 @@
 const Blog = require('./blog')
 const User = require('./user')
 
-Blog.sync()
-User.sync()
+// hightlight-start
+User.hasMany(Blog)
+Blog.belongsTo(User)
+
+Blog.sync({ alter: true })
+User.sync({ alter: true })
+// hightlight-end
+
 
 module.exports = {
     Blog, User

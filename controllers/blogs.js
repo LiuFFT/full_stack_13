@@ -1,6 +1,7 @@
 const router = require('express').Router()
 
-const { Blog } = require('../models')
+const { Blog, User} = require('../models')
+const {tokenExtractor} = require("../middleware/errorhandler");
 
 const blogFinder = async (req, res, next) => {
     req.blog = await Blog.findByPk(req.params.id)
@@ -16,24 +17,35 @@ router.get('/:id', blogFinder, async (req, res) => {
 })
 
 router.get('/', blogFinder, async (req, res) => {
-    const blogs = await Blog.findAll()
+    const blogs = await Blog.findAll({
+        attributes: { exclude: ['userId'] },
+        include: {
+            model: User,
+            attributes: ['name']
+        }
+    })
     res.json(blogs)
 })
 
 router.post('/', async (req, res) => {
-    const blog = await Blog.create(req.body)
+    const user = await User.findOne()
+    const blog = await Blog.create({...req.body, userId: user.id})
     return res.json(blog)
 })
 
-router.delete('/:id', blogFinder,  async (req, res) => {
-    if (req.blog){
-        await req.blog.destroy()
-    }else{
-        console.log("Not found blog id: ", req.params.id)
-        res.status(404).end()
-    }
+router.delete('/:id', tokenExtractor, blogFinder,  async (req, res) => {
+    const user = await User.findByPk(req.decodedToken.id);
 
-    res.status(200).end()
+    if (user.id === req.blog.userId){
+        if (req.blog){
+            await req.blog.destroy()
+        }else{
+            console.log("Not found blog id: ", req.params.id)
+            res.status(404).end()
+        }
+
+        res.status(200).end()
+    }
 })
 
 

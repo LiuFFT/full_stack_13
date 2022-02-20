@@ -1,6 +1,6 @@
 const router = require('express').Router()
 
-const { User } = require('../models')
+const { User, Blog} = require('../models')
 
 const userFinder = async (req, res, next) => {
     req.user = await User.findOne({
@@ -13,7 +13,11 @@ const userFinder = async (req, res, next) => {
 }
 
 router.get('/', async (req, res) => {
-    const users = await User.findAll().then()
+    const users = await User.findAll({
+        include: {
+            model: Blog
+        }
+    })
     res.json(users)
 })
 
