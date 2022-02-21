@@ -1,7 +1,7 @@
 const router = require('express').Router()
 
 const { Blog, User} = require('../models')
-const {tokenExtractor} = require("../middleware/errorhandler");
+const {tokenExtractor, sessionCheck} = require("../middleware/errorhandler");
 const { Op } = require("sequelize");
 
 const blogFinder = async (req, res, next) => {
@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
     return res.json(blog)
 })
 
-router.delete('/:id', tokenExtractor, blogFinder,  async (req, res) => {
+router.delete('/:id', tokenExtractor, blogFinder, sessionCheck,  async (req, res) => {
     const user = await User.findByPk(req.decodedToken.id);
 
     if (user.id === req.blog.userId){

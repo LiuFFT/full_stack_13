@@ -1,6 +1,7 @@
 const Blog = require('./blog')
 const User = require('./user')
 const Reading = require("./reading");
+const Session = require("./session");
 
 // hightlight-start
 User.hasMany(Blog)
@@ -15,5 +16,5 @@ Blog.belongsToMany(User, { through: Reading, as: 'users_marked' });
 
 
 module.exports = {
-    Blog, User, Reading
+    Blog, User, Reading, Session
 }
