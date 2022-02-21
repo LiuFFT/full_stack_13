@@ -40,6 +40,9 @@ router.get('/', blogFinder, async (req, res) => {
             model: User,
             attributes: ['name','id', 'username']
         },
+        order: [
+            ['likes', 'DESC']
+        ],
         where
     })
     res.json(blogs)
